@@ -34,4 +34,17 @@ export class Tree {
     this.currentNode = this.currentNode.prev;
     return this.currentNode;
   }
+
+  goForward() {
+
+    if (!this.currentNode.children.length) return null;
+
+    if (this.currentNode.children.length === 1) {
+      this.currentNode = this.currentNode.children[0];
+      return this.currentNode;
+    }
+    
+    // more than one children. We many path to choose from.
+    return this.currentNode.children;
+  }
 }
