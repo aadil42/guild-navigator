@@ -79,6 +79,8 @@ export function activate(context: vscode.ExtensionContext) {
     const editor = event.textEditor
     const file = editor.document.uri.fsPath
     const line = editor.selection.active.line
+
+    if (tree.currentNode.file === file && tree.currentNode.line === line) return;
     
     // if switching to a new file, store current node as prevFileLatestNode
     // so we can jump back to it if this file is closed
