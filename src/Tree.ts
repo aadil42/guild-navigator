@@ -4,7 +4,7 @@ import { TreeNode } from './TreeNode'
 import * as vscode from 'vscode'
 
 export class Tree {
-  root: RootNodeType
+  root: RootNodeType;
   currentNode: RootNodeType | TreeNodeType
 
   constructor() {
@@ -51,5 +51,21 @@ export class Tree {
   selectChild(node: TreeNodeType) {
     this.currentNode = node;
     return this.currentNode;
+  }
+
+  clearHistory() {
+    this.currentNode = this.root;
+    this.reset();
+  }
+
+  reset() {
+    this.root = {
+      children: [],
+      file: null,
+      line: null,
+      prev: null,
+      prevFileLatestNode: null,
+      isRootNode: true
+    }
   }
 }
