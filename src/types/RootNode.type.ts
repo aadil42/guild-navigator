@@ -6,5 +6,6 @@ export type RootNodeType = {
   prev:  null,
   children: TreeNodeType[],
   prevFileLatestNode: null,
+  isRootNode: true
 }
 
