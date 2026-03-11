@@ -28,4 +28,10 @@ export class Tree {
     this.currentNode = this.currentNode.children[len-1];
   }
 
+  goBack() {
+
+    if (!this.currentNode.prev) return null;
+    this.currentNode = this.currentNode.prev;
+    return this.currentNode;
+  }
 }
