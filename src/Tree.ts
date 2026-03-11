@@ -47,4 +47,9 @@ export class Tree {
     // more than one children. We many path to choose from.
     return this.currentNode.children;
   }
+
+  selectChild(node: TreeNodeType) {
+    this.currentNode = node;
+    return this.currentNode;
+  }
 }
