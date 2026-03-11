@@ -1,9 +1,11 @@
+import { TreeNodeType } from "./types/TreeNode.type"
+
 export class TreeNode {
   file: string
   line: number
-  prev: TreeNode | null
-  children: TreeNode[]
-  prevFileLatestNode: TreeNode | null
+  prev: TreeNodeType | null
+  children: TreeNodeType[]
+  prevFileLatestNode: TreeNodeType | null
 
   constructor(file: string, line: number) {
     this.file = file
