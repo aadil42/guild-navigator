@@ -19,7 +19,7 @@ export class Tree {
     this.currentNode = this.root
   }
 
-  addNode({ line, file, prevFileLatestNode }: { line: number, file: string, prevFileLatestNode: TreeNodeType }) {
+  addNode({ line, file, prevFileLatestNode }: { line: number, file: string, prevFileLatestNode: TreeNodeType | null }) {
     const preNode = this.currentNode;
     const nextNode = new TreeNode({line, file, prev: preNode});
     nextNode.prevFileLatestNode = prevFileLatestNode
