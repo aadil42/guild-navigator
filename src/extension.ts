@@ -2,23 +2,8 @@ import * as vscode from 'vscode';
 import { Tree } from "./Tree";
 import { TreeNodeType } from './types/TreeNode.type';
 import navigateToNode from "./utils/navigation";
+import showBranchPicker from "./utils/showBranchPicker";
 
-// Shows a quick pick popup when there are multiple forward paths
-// User picks which branch to navigate to
-async function showBranchPicker(nodes: TreeNodeType[]): Promise<TreeNodeType | null> {
-  const items = nodes.map((node, index) => ({
-    label: `$(file) ${node.file.split('/').pop()}`,
-    description: `Line ${node.line + 1}`,
-    index
-  }))
-
-  const picked = await vscode.window.showQuickPick(items, {
-    placeHolder: 'Choose which path to follow'
-  })
-
-  if (!picked) return null
-  return nodes[picked.index]
-}
 
 export function activate(context: vscode.ExtensionContext) {
 
