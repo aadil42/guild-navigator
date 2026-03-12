@@ -30,7 +30,9 @@ export class Tree {
 
   goBack() {
 
-    if (!this.currentNode.prev) return null;
+    if (!this.currentNode.prev) return null; // What if we never did navigate and just sitting at the rootnode and try to go back.
+    if ((this.currentNode.prev as RootNodeType).isRootNode) return null; // if the prev node is root node then we should not go to that. 
+
     this.currentNode = this.currentNode.prev;
     return this.currentNode;
   }
