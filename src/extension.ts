@@ -39,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
     // null means we're at root, nothing to go back to
     if (!node) return
     // root node has no file, skip
-    if (!('file' in node)) return
+    if (!node.file) return
     await navigateToNode(node as TreeNodeType)
   });
 
@@ -70,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
   });
   // Track navigation - fires on mouse click or command (go to definition etc.)
   // Ignores arrow key movements
-  vscode.window.onDidChangeTextEditorSelection((event) => {
+  const selectionListener = vscode.window.onDidChangeTextEditorSelection((event) => {
     
     const isMouse = event.kind === vscode.TextEditorSelectionChangeKind.Mouse
     const isCommand = event.kind === vscode.TextEditorSelectionChangeKind.Command
@@ -89,12 +89,25 @@ export function activate(context: vscode.ExtensionContext) {
     const prevFileLatestNode = isNewFile 
       ? (currentNode as TreeNodeType) 
       : ('prevFileLatestNode' in currentNode ? currentNode.prevFileLatestNode : null)
-
-    vscode.window.showInformationMessage(`addNode: ${file} line ${line}`)
     tree.addNode({ file, line, prevFileLatestNode })
   })
 
-  context.subscriptions.push(goBackCommand, goForwardCommand, clearNavigationHistory)
+  const fileOpenListener = vscode.window.onDidChangeActiveTextEditor((editor) => {
+    if (!editor) return
+    
+    const file = editor.document.uri.fsPath
+    const line = editor.selection.active.line
+
+    const currentNode = tree.currentNode
+    const isNewFile = 'file' in currentNode && currentNode.file !== file
+    if (!isNewFile) return  // same file, skip
+
+    const prevFileLatestNode = 'file' in currentNode ? (currentNode as TreeNodeType) : null
+
+    tree.addNode({ file, line, prevFileLatestNode })
+ })
+
+  context.subscriptions.push(goBackCommand, goForwardCommand, clearNavigationHistory, selectionListener, fileOpenListener);
 }
 
 export function deactivate() {}
