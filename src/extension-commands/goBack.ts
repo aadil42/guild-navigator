@@ -5,6 +5,7 @@ import navigateToNode from '../utils/navigation';
 
 export default function createGoBackCommand(tree: Tree, isNavigating: { value: boolean }) {
   return vscode.commands.registerCommand('guild-navigator.goBack', async () => {
+    console.log('goback calling from extension');
     vscode.window.showInformationMessage('Guild Navigator: Going back')
     const node = tree.goBack()
     // null means we're at root, nothing to go back to
