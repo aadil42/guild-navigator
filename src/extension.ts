@@ -3,31 +3,19 @@ import { Tree } from "./Tree";
 import { TreeNodeType } from './types/TreeNode.type';
 import navigateToNode from "./utils/navigation";
 import showBranchPicker from "./utils/showBranchPicker";
-
+import createGoBackCommand from "./extension-commands/goBack";
 
 export function activate(context: vscode.ExtensionContext) {
 
-  let isNavigating = false;
 
+  const isNavigating = {
+    value: false
+  }
   vscode.window.showInformationMessage('Guild Navigator loaded 🧭')
   const tree = new Tree();
 
   // Go back in navigation history
-  const goBackCommand = vscode.commands.registerCommand('guild-navigator.goBack', async () => {
-	vscode.window.showInformationMessage('Guild Navigator: Going back')
-    const node = tree.goBack()
-    // null means we're at root, nothing to go back to
-    if (!node) return
-    // root node has no file, skip
-    if (!node.file) return
-
-    // setting isNaivgating to true and then false because if we don't do it then when navigating to new file or line.
-    //  we'll trigger the event listner for going to new line or file and that will add node and polute the tree. 
-    isNavigating = true;
-    await navigateToNode(node as TreeNodeType);
-    // done navigating
-    isNavigating = false;
-  });
+  const goBackCommand = createGoBackCommand(tree, isNavigating);
 
   // Go forward in navigation history
   const goForwardCommand = vscode.commands.registerCommand('guild-navigator.goForward', async () => {
@@ -38,9 +26,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     // single child - navigate directly
     if (!Array.isArray(result)) {
-      isNavigating = true;
+      isNavigating.value = true;
       await navigateToNode(result as TreeNodeType)
-      isNavigating = false;
+      isNavigating.value = false;
       return
     }
 
@@ -48,9 +36,9 @@ export function activate(context: vscode.ExtensionContext) {
     const picked = await showBranchPicker(result as TreeNodeType[])
     if (!picked) return
     const node = tree.selectChild(picked)
-    isNavigating = true;
+    isNavigating.value = true;
     await navigateToNode(node as TreeNodeType)
-    isNavigating = false;
+    isNavigating.value = false;
   });
 
   // clear navigation history
