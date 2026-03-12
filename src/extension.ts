@@ -8,6 +8,7 @@ import createSelectionListener from "./listeners/selectionListener";
 import createFileOpenListener from "./listeners/fileOpenListener";
 
 export function activate(context: vscode.ExtensionContext) {
+  console.log('GUILD NAVIGATOR ACTIVATE');
   const isNavigating = {
     value: false
   }
