@@ -29,6 +29,9 @@ async function showBranchPicker(nodes: TreeNodeType[]): Promise<TreeNodeType | n
 }
 
 export function activate(context: vscode.ExtensionContext) {
+
+  let isNavigating = false;
+
   vscode.window.showInformationMessage('Guild Navigator loaded 🧭')
   const tree = new Tree();
 
@@ -40,7 +43,13 @@ export function activate(context: vscode.ExtensionContext) {
     if (!node) return
     // root node has no file, skip
     if (!node.file) return
-    await navigateToNode(node as TreeNodeType)
+
+    // setting isNaivgating to true and then false because if we don't do it then when navigating to new file or line.
+    //  we'll trigger the event listner for going to new line or file and that will add node and polute the tree. 
+    isNavigating = true;
+    await navigateToNode(node as TreeNodeType);
+    // done navigating
+    isNavigating = false;
   });
 
   // Go forward in navigation history
@@ -52,7 +61,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     // single child - navigate directly
     if (!Array.isArray(result)) {
+      isNavigating = true;
       await navigateToNode(result as TreeNodeType)
+      isNavigating = false;
       return
     }
 
@@ -60,7 +71,9 @@ export function activate(context: vscode.ExtensionContext) {
     const picked = await showBranchPicker(result as TreeNodeType[])
     if (!picked) return
     const node = tree.selectChild(picked)
+    isNavigating = true;
     await navigateToNode(node as TreeNodeType)
+    isNavigating = false;
   });
 
   // clear navigation history
@@ -72,9 +85,10 @@ export function activate(context: vscode.ExtensionContext) {
   // Ignores arrow key movements
   const selectionListener = vscode.window.onDidChangeTextEditorSelection((event) => {
     
+    if (isNavigating) return;
     const isMouse = event.kind === vscode.TextEditorSelectionChangeKind.Mouse
     const isCommand = event.kind === vscode.TextEditorSelectionChangeKind.Command
-    if (!isMouse && !isCommand) return
+    if (!isMouse && !isCommand) return;
 
     const editor = event.textEditor
     const file = editor.document.uri.fsPath
@@ -93,8 +107,8 @@ export function activate(context: vscode.ExtensionContext) {
   })
 
   const fileOpenListener = vscode.window.onDidChangeActiveTextEditor((editor) => {
-    if (!editor) return
-    
+    if (!editor) return;
+    if (isNavigating) return;
     const file = editor.document.uri.fsPath
     const line = editor.selection.active.line
 
