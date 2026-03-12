@@ -4,6 +4,7 @@ import { TreeNodeType } from './types/TreeNode.type';
 import navigateToNode from "./utils/navigation";
 import showBranchPicker from "./utils/showBranchPicker";
 import createGoBackCommand from "./extension-commands/goBack";
+import createGoForwardkCommand from "./extension-commands/goForward";
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -18,28 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
   const goBackCommand = createGoBackCommand(tree, isNavigating);
 
   // Go forward in navigation history
-  const goForwardCommand = vscode.commands.registerCommand('guild-navigator.goForward', async () => {
-	vscode.window.showInformationMessage('Guild Navigator: Going forward')
-    const result = tree.goForward()
-    // null means no forward history
-    if (!result) return
-
-    // single child - navigate directly
-    if (!Array.isArray(result)) {
-      isNavigating.value = true;
-      await navigateToNode(result as TreeNodeType)
-      isNavigating.value = false;
-      return
-    }
-
-    // multiple children - show picker for user to choose branch
-    const picked = await showBranchPicker(result as TreeNodeType[])
-    if (!picked) return
-    const node = tree.selectChild(picked)
-    isNavigating.value = true;
-    await navigateToNode(node as TreeNodeType)
-    isNavigating.value = false;
-  });
+  const goForwardCommand = createGoForwardkCommand(tree, isNavigating);
 
   // clear navigation history
   const clearNavigationHistory = vscode.commands.registerCommand('guild-navigator.clearHistory', async () => {
