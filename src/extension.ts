@@ -3,6 +3,8 @@ import { Tree } from "./Tree";
 import { TreeNodeType } from './types/TreeNode.type';
 import createGoBackCommand from "./extension-commands/goBack";
 import createGoForwardkCommand from "./extension-commands/goForward";
+import createClearNavigationHistory from "./extension-commands/clearHistory";
+import createSelectionListener from "./listeners/selectionListener";
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -20,34 +22,10 @@ export function activate(context: vscode.ExtensionContext) {
   const goForwardCommand = createGoForwardkCommand(tree, isNavigating);
 
   // clear navigation history
-  const clearNavigationHistory = vscode.commands.registerCommand('guild-navigator.clearHistory', async () => {
-    vscode.window.showInformationMessage('Guild Navigator: clear history')
-    tree.clearHistory();
-  });
+  const clearNavigationHistory = createClearNavigationHistory(tree);
   // Track navigation - fires on mouse click or command (go to definition etc.)
   // Ignores arrow key movements
-  const selectionListener = vscode.window.onDidChangeTextEditorSelection((event) => {
-    
-    if (isNavigating) return;
-    const isMouse = event.kind === vscode.TextEditorSelectionChangeKind.Mouse
-    const isCommand = event.kind === vscode.TextEditorSelectionChangeKind.Command
-    if (!isMouse && !isCommand) return;
-
-    const editor = event.textEditor
-    const file = editor.document.uri.fsPath
-    const line = editor.selection.active.line
-
-    if (tree.currentNode.file === file && tree.currentNode.line === line) return;
-    
-    // if switching to a new file, store current node as prevFileLatestNode
-    // so we can jump back to it if this file is closed
-    const currentNode = tree.currentNode
-    const isNewFile = 'file' in currentNode && currentNode.file !== file
-    const prevFileLatestNode = isNewFile 
-      ? (currentNode as TreeNodeType) 
-      : ('prevFileLatestNode' in currentNode ? currentNode.prevFileLatestNode : null)
-    tree.addNode({ file, line, prevFileLatestNode })
-  })
+  const selectionListener = createSelectionListener(tree, isNavigating);
 
   const fileOpenListener = vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (!editor) return;
