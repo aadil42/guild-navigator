@@ -30,6 +30,9 @@ export class Tree {
 
   goBack() {
 
+    console.log('goback from class');
+    console.log('file', this.currentNode.file);
+    console.log('line', this.currentNode.line);
     if (!this.currentNode.prev) return null; // What if we never did navigate and just sitting at the rootnode and try to go back.
     if ((this.currentNode.prev as RootNodeType).isRootNode) return null; // if the prev node is root node then we should not go to that. 
 
@@ -39,6 +42,9 @@ export class Tree {
 
   goForward() {
 
+    console.log('goforward');
+    console.log('file', this.currentNode.file);
+    console.log('line', this.currentNode.line);
     if (!this.currentNode.children.length) return null;
 
     if (this.currentNode.children.length === 1) {
