@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
 import { Tree } from "./Tree";
 import { TreeNodeType } from './types/TreeNode.type';
-import navigateToNode from "./utils/navigation";
-import showBranchPicker from "./utils/showBranchPicker";
 import createGoBackCommand from "./extension-commands/goBack";
 import createGoForwardkCommand from "./extension-commands/goForward";
 
