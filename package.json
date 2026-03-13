@@ -1,5 +1,6 @@
 {
   "name": "guild-navigator",
+  "publisher": "aadil42",
   "displayName": "guild-navigator",
   "description": "Tree-based code navigation. Go back, go forward, choose your path.",
   "version": "0.0.1",
@@ -59,7 +60,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.110.0",
+    "@types/vscode": "^1.109.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
     "typescript-eslint": "^8.56.1",
