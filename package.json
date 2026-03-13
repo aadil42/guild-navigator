@@ -3,6 +3,7 @@
   "displayName": "guild-navigator",
   "description": "Tree-based code navigation. Go back, go forward, choose your path.",
   "version": "0.0.1",
+  "icon": "icon/guild-navigator-icon.png",
   "engines": {
     "vscode": "^1.109.0"
   },
@@ -16,8 +17,32 @@
       {
         "command": "guild-navigator.helloWorld",
         "title": "Hello World"
+      },
+      {
+      "command": "guild-navigator.goBack",
+      "title": "Guild Navigator: Go Back"
+      },
+      {
+        "command": "guild-navigator.goForward",
+        "title": "Guild Navigator: Go Forward"
+      },
+      {
+        "command": "guild-navigator.clearHistory",
+        "title": "Guild Navigator: Clear History"
       }
-    ]
+    ],
+    "keybindings": [
+      {
+        "command": "guild-navigator.goBack",
+        "key": "ctrl+alt+[",
+        "mac": "cmd+alt+["
+      },
+      {
+        "command": "guild-navigator.goForward",
+        "key": "ctrl+alt+]",
+        "mac": "cmd+alt+]"
+      }
+  ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
